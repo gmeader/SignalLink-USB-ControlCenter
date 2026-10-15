@@ -1,0 +1,163 @@
+<Window x:Class="SignaLinkControlCenter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SignaLink Control Center" Height="850" Width="800"
+        MinHeight="700" MinWidth="760" Background="{StaticResource WindowBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" Margin="0,0,0,16">
+            <Button DockPanel.Dock="Right" Content="Refresh" Click="Refresh_Click" Width="100" HorizontalAlignment="Right"/>
+            <StackPanel>
+                <TextBlock Text="SignaLink Control Center" FontSize="30" FontWeight="Bold"/>
+                <TextBlock Text="Windows audio and Auto-PTT dashboard for Tigertronics SignaLink USB" Foreground="{StaticResource MutedBrush}" FontSize="15"/>
+            </StackPanel>
+        </DockPanel>
+
+            <Border Grid.Row="1" Background="{StaticResource PanelBrush}" CornerRadius="10" Padding="18" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="SIGNALINK USB" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock x:Name="DeviceStatus" Text="Checking…" FontSize="20" Margin="0,10,0,2"/>
+                    <TextBlock x:Name="PttDeviceText" Text="Auto-PTT: audio activated" Foreground="{StaticResource MutedBrush}"/>
+                    <TextBlock Text="No serial, COM, or HID PTT interface is used." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+        <Border Grid.Row="2" Background="{StaticResource PanelBrush}" CornerRadius="10" Padding="18" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="DETECTED AUDIO DEVICES" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                <TextBlock Text="Select the exact SignaLink USB endpoints (USB Audio CODEC may not be unique):" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                <TextBlock Text="RX input"/>
+                <ComboBox x:Name="RxDevicePicker" SelectionChanged="DevicePicker_SelectionChanged" Foreground="#000000" Background="#FFFFFF" Margin="0,3,0,8">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding FriendlyName}" Foreground="#000000" Background="#FFFFFF"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Foreground" Value="#000000"/>
+                            <Setter Property="Background" Value="#FFFFFF"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
+                <TextBlock Text="TX output"/>
+                <ComboBox x:Name="TxDevicePicker" SelectionChanged="DevicePicker_SelectionChanged" Foreground="#000000" Background="#FFFFFF" Margin="0,3,0,12">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding FriendlyName}" Foreground="#000000" Background="#FFFFFF"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Foreground" Value="#000000"/>
+                            <Setter Property="Background" Value="#FFFFFF"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
+            </StackPanel>
+        </Border>
+
+
+        <Border Grid.Row="3" Background="{StaticResource PanelBrush}" CornerRadius="10" Padding="18" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="WINDOWS AUDIO CHECK" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="SIGNALINK RX / Recording" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="1" Text="SIGNALINK TX / Playback" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="2" Text="AGC" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="3" Text="Enhancements" FontWeight="Bold"/>
+                </Grid>
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+                    <TextBlock x:Name="RxText" Grid.Column="0" Text="—"/>
+                    <TextBlock x:Name="TxText" Grid.Column="1" Text="—"/>
+                    <TextBlock x:Name="AgcText" Grid.Column="2" Text="Not exposed / inspect Custom tab"/>
+                    <TextBlock x:Name="EnhText" Grid.Column="3" Text="—"/>
+                </Grid>
+                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                    <Button Content="Fix Enhancements" Click="FixEnhancements_Click"/>
+                    <Button Content="Open Windows Audio Properties" Click="OpenProperties_Click"/>
+                    <Button Content="Fix All / Refresh" Click="FixAll_Click"/>
+                    
+                </StackPanel>
+                <TextBlock x:Name="AudioMessage" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="4,8,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="4" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="{StaticResource PanelBrush}" CornerRadius="10" Padding="18" Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="TX / OUTPUT" FontSize="18" FontWeight="Bold"/>
+                                        <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="52"/></Grid.ColumnDefinitions>
+                        <Slider x:Name="OutputLevelSlider" Grid.Column="0" Minimum="0" Maximum="100" Value="50"
+                                TickFrequency="10" IsSnapToTickEnabled="False" ValueChanged="OutputLevelSlider_ValueChanged"/>
+                        <TextBlock x:Name="OutputLevelValue" Grid.Column="1" Text="50%" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock Text="LEFT — Output audio" FontSize="12" Margin="0,2,0,0"/>
+                    <ProgressBar x:Name="OutputLeftMeter" Minimum="0" Maximum="100" Height="16" Margin="0,2,0,4" Background="#20252B" Foreground="#4CAF50"/>
+                    <TextBlock Text="RIGHT — Output audio" FontSize="12" Margin="0,2,0,0"/>
+                    <ProgressBar x:Name="OutputRightMeter" Minimum="0" Maximum="100" Height="16" Margin="0,2,0,4" Background="#20252B" Foreground="#E6A23C"/>
+                    <TextBlock x:Name="TxAudioStatus" Text="TX audio: idle" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,2,0,0"/>
+                    
+                    <Separator Margin="0,14,0,10"/>
+                    <TextBlock Text="RX / INPUT" FontWeight="Bold"/>
+                    <TextBlock Text="SignaLink RX → computer speakers" Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,6"/>
+                    <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="52"/></Grid.ColumnDefinitions>
+                        <Slider x:Name="InputLevelSlider" Grid.Column="0" Minimum="0" Maximum="100" Value="50"
+                                TickFrequency="10" IsSnapToTickEnabled="False" ValueChanged="InputLevelSlider_ValueChanged"/>
+                        <TextBlock x:Name="InputLevelValue" Grid.Column="1" Text="50%" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+                    <ProgressBar x:Name="InputMeter" Minimum="0" Maximum="100" Height="20" Margin="0,2,0,8" Background="#20252B" Foreground="#4CAF50"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                        <Button Content="Start Input Monitor" Click="StartMonitor_Click"/>
+                        <Button Content="Stop Input Monitor" Click="StopMonitor_Click"/>
+                    </StackPanel>
+                    <TextBlock x:Name="MonitorStatus" Text="Input monitor stopped" Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Background="{StaticResource PanelBrush}" CornerRadius="10" Padding="18" Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="PTT TEST" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Text="Auto-PTT / audio activated" Margin="0,8,0,2"/>
+                    <TextBlock Text="PTT TEST directly asserts Auto-PTT / audio activated; it does not use the SignaLink right-channel VOX." Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Duration:" VerticalAlignment="Center"/>
+                        <TextBox x:Name="PttSeconds" Text="3.0" Width="70" Margin="8,4"/>
+                        <TextBlock Text="seconds" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button x:Name="TestToneButton" Content="TEST TONE" Click="TestTone_Click" FontSize="16" FontWeight="Bold" Width="145" HorizontalAlignment="Left"/>
+                        <Button x:Name="TestPttButton" Content="PTT TEST" Click="TestPtt_Click" FontSize="18" FontWeight="Bold" Width="145" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                    </StackPanel>
+                    <TextBlock x:Name="TestToneStatus" Text="Test tone off" Foreground="{StaticResource MutedBrush}" Margin="4,8,0,0"/>
+                    <TextBlock x:Name="PttStatus" Text="Auto-PTT: not tested" Foreground="{StaticResource MutedBrush}" Margin="4,4,0,0"/>
+                    <TextBlock x:Name="VoxStatus" Text="TX audio idle" Foreground="{StaticResource MutedBrush}" Margin="4,4,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+
+        <Border Grid.Row="5" Background="{StaticResource PanelBrush}" CornerRadius="10" Padding="18" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="WINDOWS DEVICE LISTS" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                <TextBlock Text="Recording devices" FontWeight="Bold"/>
+                <ItemsControl x:Name="InputsList" Margin="0,4,0,10"/>
+                <TextBlock Text="Playback devices" FontWeight="Bold"/>
+                <ItemsControl x:Name="OutputsList" Margin="0,4,0,10"/>
+                <TextBlock Text="AVAILABLE COM PORTS (informational only)" FontWeight="Bold" Margin="0,4,0,4"/>
+                <ItemsControl x:Name="ComPortsList" Margin="0,0,0,8"/>
+                <TextBlock Text="SignaLink USB does not use a COM port for audio or PTT." Foreground="{StaticResource MutedBrush}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+    </ScrollViewer>
+</Window>
